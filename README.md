@@ -10,3 +10,7 @@ R-Presentation or slidify to create data product related presentations
 deployed at:
 
 https://santiemi.shinyapps.io/trabajo/
+
+Presentation:
+
+http://rpubs.com/santiagoe/DevelopingDataProducts
