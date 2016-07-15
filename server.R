@@ -3,13 +3,10 @@ library(ISLR)
 library(MASS)
 library(quantmod)
 library(ggplot2)
+library(plotly)
 
 
 shinyServer(
-
-
-
-
 
   function(input, output){
 
@@ -19,8 +16,6 @@ shinyServer(
 
       start=input$start
       finish=input$finish
-
-
 
 
       Data_1 <- new.env()
@@ -35,7 +30,7 @@ shinyServer(
 
       # serie log
 
-      serie_1<-log10(Equity_1[,4])
+      serie_1<-log10(Equity_1[,6])
 
       #Armar los distintos valores
 
@@ -114,7 +109,7 @@ shinyServer(
 
       # serie log
 
-      serie_1<-log10(Equity_1[,4])
+      serie_1<-log10(Equity_1[,6])
 
       #Armar los distintos valores
 
@@ -153,8 +148,52 @@ shinyServer(
 
 
 
-    })## fin render plot
+    })## fin render plot1
 
+
+    output$plot2<-renderPlotly({
+
+
+
+      sy=input$Stock
+
+      start=input$start
+      finish=input$finish
+
+
+
+
+      Data_1 <- new.env()
+      getSymbols(Symbols = sy[1], src = 'yahoo', from =start ,
+                 to =finish , env = Data_1)
+
+      #Varible para descargar de env data
+
+
+      Equity_1 <- as.data.frame(Data_1[[sy[1]]])
+
+
+
+      Close_price<-Equity_1[,6]
+
+      potrsp<-input$slider/100
+      tran_1<-rep("Training",length(Equity_1[,6])*potrsp)
+      tran_2<-rep("Test",length(Close_price)-length(tran_1))
+
+      traning<-c(tran_1,tran_2)
+      time_t<-c(1:length(Close_price))
+
+      Smarket_ploty<- data.frame(time_t,Close_price, traning)
+      colnames(Smarket_ploty) <- c("time_t", "Close_price", "traning")
+
+
+
+
+      plot_ly(Smarket_ploty, x = time_t, y = Close_price, text = paste("Close Price: ",Close_price ),
+              color = traning, mode = "markers")
+
+
+    })## fin render plot2
 
     output$data<-renderTable({
 
@@ -178,7 +217,7 @@ shinyServer(
 
       # serie log
 
-      serie_1<-log10(Equity_1[,4])
+      serie_1<-log10(Equity_1[,6])
 
       #Armar los distintos valores
 
@@ -210,8 +249,11 @@ shinyServer(
 
 
     })## data
-
+    output$img <- renderImage({list(src = 'imagen1.png')}, deleteFile = FALSE)
 
   }
 
 )
+
+
+
